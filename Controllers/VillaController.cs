@@ -13,9 +13,14 @@ namespace RoyalVilla_API.Controllers
             return "Get all villas";
         }
         [HttpGet("{id:int}")]
-        public string GetVillasById(int id)
+        public string GetVillasById([FromRoute] int id) // data come from url itself
         {
             return $"Get villa {id}";
+        }
+        [HttpGet("{id:int}/{name}")] //string is the default type so name is empty
+        public string GetVillasByIdAndName([FromQuery]int id,[FromQuery] string name) 
+        {
+            return $"Get Villa: {id} : {name}";
         }
     }
 }
