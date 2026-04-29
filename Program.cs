@@ -13,7 +13,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(); // localhost/scalar/v1 -> paste the url to the browser when run
 }
 
 app.UseHttpsRedirection();
