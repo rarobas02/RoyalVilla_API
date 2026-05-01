@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RoyalVilla_API.Data;
+using RoyalVilla_API.Models;
 
 namespace RoyalVilla_API.Controllers
 {
@@ -7,10 +10,15 @@ namespace RoyalVilla_API.Controllers
     [ApiController]
     public class VillaController : ControllerBase
     {
-        [HttpGet]
-        public string GetVillas()
+        private readonly ApplicationDbContext _db;
+        public VillaController(ApplicationDbContext db)
         {
-            return "Get all villas";
+            _db = db;
+        }
+        [HttpGet]
+        public IEnumerable<Villa> GetVillas()
+        {
+            return _db.Villas.ToList();
         }
         [HttpGet("{id:int}")]
         public string GetVillasById([FromRoute] int id) // data come from url itself
