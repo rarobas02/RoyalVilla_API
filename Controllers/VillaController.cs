@@ -58,7 +58,7 @@ namespace RoyalVilla_API.Controllers
                 Villa villa = _mapper.Map<Villa>(villaDto);
                 await _db.Villas.AddAsync(villa);
                 await _db.SaveChangesAsync();
-                return Ok(villa);
+                return CreatedAtAction(nameof(CreateVilla),new {id=villa.Id},villa);
             }
             catch (Exception ex)
             {
