@@ -42,10 +42,23 @@ namespace RoyalVilla_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An Error occurred while retrieving villa with Id{id}: {ex.Message}");
             }
         }
-        [HttpGet("{id:int}/{name}")] //string is the default type so name is empty
-        public string GetVillasByIdAndName([FromRoute] int id,[FromRoute] string name) 
+        [HttpPost]
+        public async Task<ActionResult<Villa>> CreateVilla(Villa villa)
         {
-            return $"Get Villa: {id} : {name}";
+            try
+            {
+                if(villa is null)
+                {
+                    return BadRequest("Villa data is required");
+                }
+                await _db.Villas.AddAsync(villa);
+                await _db.SaveChangesAsync();
+                return Ok(villa);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An Error occurred while creating villa: {ex.Message}");
+            }
         }
     }
 }
