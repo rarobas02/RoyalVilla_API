@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RoyalVilla_API.Models
+namespace RoyalVilla_API.Models.DTO
 {
-    public class Villa
+    public class VillaCreateDTO
     {
-        [Key]
-        public int Id { get; set; }
+        [MaxLength(50)]
         [Required]
         public required string Name { get; set; }
         public string? Details { get; set; }
@@ -13,7 +12,5 @@ namespace RoyalVilla_API.Models
         public int Sqft { get; set; }
         public int Occupancy { get; set; }
         public string? ImageUrl { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RoyalVilla_API.Data;
 using RoyalVilla_API.Models;
+using RoyalVilla_API.Models.DTO;
 
 namespace RoyalVilla_API.Controllers
 {
@@ -43,14 +44,24 @@ namespace RoyalVilla_API.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult<Villa>> CreateVilla(Villa villa)
+        public async Task<ActionResult<Villa>> CreateVilla(VillaCreateDTO villaDto)
         {
             try
             {
-                if(villa is null)
+                if(villaDto is null)
                 {
                     return BadRequest("Villa data is required");
                 }
+                Villa villa = new() //simplified new syntax, available in C# 9.0 and later
+                {
+                    Name = villaDto.Name,
+                    Details = villaDto.Details,
+                    Rate = villaDto.Rate,
+                    Sqft = villaDto.Sqft,
+                    Occupancy = villaDto.Occupancy,
+                    ImageUrl = villaDto.ImageUrl,
+                    CreatedDate = DateTime.UtcNow
+                };
                 await _db.Villas.AddAsync(villa);
                 await _db.SaveChangesAsync();
                 return Ok(villa);
