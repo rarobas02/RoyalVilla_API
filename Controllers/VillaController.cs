@@ -18,7 +18,7 @@ namespace RoyalVilla_API.Controllers
             return $"Get villa {id}";
         }
         [HttpGet("{id:int}/{name}")] //string is the default type so name is empty
-        public string GetVillasByIdAndName([FromQuery]int id,[FromQuery] string name) 
+        public string GetVillasByIdAndName([FromRoute] int id,[FromRoute] string name) 
         {
             return $"Get Villa: {id} : {name}";
         }
