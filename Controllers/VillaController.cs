@@ -16,9 +16,10 @@ namespace RoyalVilla_API.Controllers
             _db = db;
         }
         [HttpGet]
-        public IEnumerable<Villa> GetVillas()
+        public async Task<ActionResult<IEnumerable<Villa>>> GetVillas()
         {
-            return _db.Villas.ToList();
+            //return _db.Villas.ToList();//not optimal
+            return Ok(await _db.Villas.ToListAsync()); //return status if everything was ok -> this way we no longer blocking the thread
         }
         [HttpGet("{id:int}")]
         public string GetVillasById([FromRoute] int id) // data come from url itself
