@@ -37,7 +37,7 @@ namespace RoyalVilla_API.Controllers
                     return new ApiResponse<VillaDTO>
                     {
                         StatusCode = 400,
-                        Error = "Villa Id must be greater than 0",
+                        Errors = "Villa Id must be greater than 0",
                         Success = false,
                         Message = "Bad Request"
                     };
