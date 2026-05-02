@@ -65,5 +65,33 @@ namespace RoyalVilla_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An Error occurred while creating villa: {ex.Message}");
             }
         }
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<Villa>> UpdateVilla(int id, VillaUpdateDTO villaDto)
+        {
+            try
+            {
+                if(villaDto is null)
+                {
+                    return BadRequest("Villa data is required");
+                }
+                if(id!= villaDto.Id)
+                {
+                    return BadRequest("Villa ID in URL does not match Villa ID in request body");
+                }
+                var existingVilla = await _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
+                if(existingVilla == null)
+                {
+                    return NotFound($"Villa with ID {id} was not found");
+                }
+                _mapper.Map(villaDto, existingVilla);
+                existingVilla.UpdatedDate = DateTime.UtcNow;
+                await _db.SaveChangesAsync();
+                return Ok(villaDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An Error occurred while updating villa: {ex.Message}");
+            }
+        }
     }
 }

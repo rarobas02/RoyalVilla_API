@@ -16,6 +16,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(o=>
 {
     o.CreateMap<Villa, VillaCreateDTO>().ReverseMap();
+    o.CreateMap<Villa, VillaUpdateDTO>().ReverseMap();
 }
 );
 var app = builder.Build();
