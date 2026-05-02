@@ -55,6 +55,11 @@ namespace RoyalVilla_API.Controllers
                 {
                     return BadRequest("Villa data is required");
                 }
+                var duplicateVilla = await _db.Villas.FirstOrDefaultAsync(u => u.Name.ToLower() == villaDto.Name.ToLower());
+                if (duplicateVilla is not null)
+                {
+                    return Conflict($"A villa name {villaDto.Name} already exists");
+                }
                 Villa villa = _mapper.Map<Villa>(villaDto);
                 await _db.Villas.AddAsync(villa);
                 await _db.SaveChangesAsync();
