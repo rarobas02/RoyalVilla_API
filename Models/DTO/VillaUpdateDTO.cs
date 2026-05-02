@@ -2,7 +2,7 @@
 
 namespace RoyalVilla_API.Models.DTO
 {
-    public class ApiResponse
+    public class VillaUpdateDTO
     {
         [Required]
         public int Id { get; set; }
