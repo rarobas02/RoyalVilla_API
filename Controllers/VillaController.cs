@@ -20,26 +20,40 @@ namespace RoyalVilla_API.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Villa>>> GetVillas()
+        public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
         {
             //return _db.Villas.ToList();//not optimal
-            return Ok(await _db.Villas.ToListAsync()); //return status if everything was ok -> this way we no longer blocking the thread
+            // return Ok(await _db.Villas.ToListAsync()); //return status if everything was ok -> this way we no longer blocking the thread
+            var villas = await _db.Villas.ToListAsync();
+            return Ok(_mapper.Map<List<VillaDTO>>(villas));
         }
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Villa>> GetVillasById(int id)
+        public async Task<ActionResult<ApiResponse<VillaDTO>>> GetVillasById(int id)
         {
             try
             {
                 if(id<=0)
                 {
-                    return BadRequest("Villa Id must be greater than 0");
+                    return new ApiResponse<VillaDTO>
+                    {
+                        StatusCode = 400,
+                        Error = "Villa Id must be greater than 0",
+                        Success = false,
+                        Message = "Bad Request"
+                    };
                 }
                 var villa = await _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
                 if(villa == null)
                 {
                     return NotFound($"Villa with ID {id} was not found");
                 }
-                return Ok(villa);
+                return new ApiResponse<VillaDTO>
+                {
+                    StatusCode = 200,
+                    Success = true,
+                    Message = "Records retrieved successfully",
+                    Data = _mapper.Map<VillaDTO>(villa)
+                };
             }
             catch (Exception ex)
             {
@@ -47,7 +61,7 @@ namespace RoyalVilla_API.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult<Villa>> CreateVilla(VillaCreateDTO villaDto)
+        public async Task<ActionResult<VillaCreateDTO>> CreateVilla(VillaCreateDTO villaDto)
         {
             try
             {
@@ -63,7 +77,7 @@ namespace RoyalVilla_API.Controllers
                 Villa villa = _mapper.Map<Villa>(villaDto);
                 await _db.Villas.AddAsync(villa);
                 await _db.SaveChangesAsync();
-                return CreatedAtAction(nameof(CreateVilla),new {id=villa.Id},villa);
+                return CreatedAtAction(nameof(CreateVilla),new {id=villa.Id},_mapper.Map<VillaDTO>(villa)); //villaDTO because we want to return the id
             }
             catch (Exception ex)
             {
@@ -71,13 +85,19 @@ namespace RoyalVilla_API.Controllers
             }
         }
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Villa>> UpdateVilla(int id, VillaUpdateDTO villaDto)
+        public async Task<ActionResult<ApiResponse<VillaDTO>>> UpdateVilla(int id, ApiResponse villaDto)
         {
             try
             {
                 if(villaDto is null)
                 {
-                    return BadRequest("Villa data is required");
+                    return new ApiResponse<VillaDTO>
+                    {
+                        StatusCode=400,
+                        Error="Villa Id must be greater than 0",
+                        Success=false,
+                        Message="Bad Request"
+                    };
                 }
                 if(id!= villaDto.Id)
                 {
@@ -104,7 +124,7 @@ namespace RoyalVilla_API.Controllers
             }
         }
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Villa>> DeleteVilla(int id)
+        public async Task<ActionResult> DeleteVilla(int id)
         {
             try
             {

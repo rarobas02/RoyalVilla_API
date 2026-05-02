@@ -2,12 +2,9 @@
 
 namespace RoyalVilla_API.Models.DTO
 {
-    public class ApiResponse
+    public class VillaDTO
     {
-        [Required]
         public int Id { get; set; }
-        [MaxLength(50)]
-        [Required]
         public required string Name { get; set; }
         public string? Details { get; set; }
         public double Rate { get; set; }
