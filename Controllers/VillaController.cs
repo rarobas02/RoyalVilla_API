@@ -83,6 +83,11 @@ namespace RoyalVilla_API.Controllers
                 {
                     return NotFound($"Villa with ID {id} was not found");
                 }
+                var duplicateVilla = await _db.Villas.FirstOrDefaultAsync(u => u.Name.ToLower() == villaDto.Name.ToLower() && u.Id != id);
+                if(duplicateVilla is not null)
+                {
+                    return Conflict($"A villa name {villaDto.Name} already exists");
+                }
                 _mapper.Map(villaDto, existingVilla);
                 existingVilla.UpdatedDate = DateTime.UtcNow;
                 await _db.SaveChangesAsync();
