@@ -6,7 +6,7 @@ namespace RoyalVilla_API.Services
     {
         Task<UserDTO?>RegisterAsync(RegistrationRequestDTO registrationRequestDTO);
         Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO loginRequestDTO);
-        Task<bool?> IsEmailExistAsync(string email);
+        Task<bool> IsEmailExistAsync(string email);
 
     }
 }
