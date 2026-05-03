@@ -1,24 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RoyalVilla_API.Models
+namespace RoyalVilla_API.Models.DTO
 {
-    public class User
+    public class RegistrationRequestDTO
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
         [EmailAddress]
         public required string Email { get; set; }
         [Required]
-        [MaxLength(100)]
-        public required string Password {  get; set; }
-        [Required]
         [MaxLength(50)]
         public required string Name { get; set; }
         [Required]
+        [MaxLength(100)]
+        public required string Password { get; set; }
         [MaxLength(50)]
         public required string Role { get; set; } = "Customer";
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
     }
 }
