@@ -10,11 +10,16 @@ namespace RoyalVilla_API.Services
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
+        public AuthService(ApplicationDbContext db, IMapper mapper)
+        {
+            _db = db;
+            _mapper = mapper;
+        }
         public async Task<bool> IsEmailExistAsync(string email)
         {
-            //return await _db.Users.AnyAsync(u => u.Email.ToLower() == email.ToLower()); //if any user with the same email exists in the database, it will return true, otherwise false
+            return await _db.Users.AnyAsync(u => u.Email.ToLower() == email.ToLower()); //if any user with the same email exists in the database, it will return true, otherwise false
             //alternatively we can use CurrentCultureIgnoreCase to ignore case sensitivity
-            return await _db.Users.AnyAsync(u => u.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase));
+            //return await _db.Users.AnyAsync(u => u.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase)); //does not work due string.equals cannot translate to string comparison to sql
         }
 
         public Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO loginRequestDTO)

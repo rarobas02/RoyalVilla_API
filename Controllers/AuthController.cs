@@ -13,10 +13,10 @@ namespace RoyalVilla_API.Controllers
     {
         private readonly IAuthService _authService = authService; //use primary constructor to inject the auth service if only one class to inject is needed
 
-        [HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<UserDTO>>> Register(RegistrationRequestDTO registrationRequestDTO)
+        public async Task<ActionResult<ApiResponse<UserDTO>>> Register([FromBody] RegistrationRequestDTO registrationRequestDTO)
         {
             try
             {
