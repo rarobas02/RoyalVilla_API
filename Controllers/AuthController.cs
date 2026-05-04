@@ -5,7 +5,7 @@ using RoyalVilla_API.Models;
 using RoyalVilla_API.Models.DTO;
 using RoyalVilla_API.Services;
 
-namespace RoyalVilla_API.Properties
+namespace RoyalVilla_API.Controllers
 {
     [Route("api/auth")]
     [ApiController]
@@ -13,7 +13,7 @@ namespace RoyalVilla_API.Properties
     {
         private readonly IAuthService _authService = authService; //use primary constructor to inject the auth service if only one class to inject is needed
 
-        [HttpGet("{id:int}")]
+        [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ApiResponse<UserDTO>>> Register(RegistrationRequestDTO registrationRequestDTO)
