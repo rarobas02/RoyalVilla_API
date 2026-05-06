@@ -1,18 +1,24 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RoyalVilla_API.Data;
 using RoyalVilla_API.Models;
 using RoyalVilla_API.Models.DTO;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace RoyalVilla_API.Services
 {
     public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _db;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public AuthService(ApplicationDbContext db, IMapper mapper)
+        public AuthService(ApplicationDbContext db, IConfiguration configuration, IMapper mapper)
         {
             _db = db;
+            _configuration = configuration;
             _mapper = mapper;
         }
         public async Task<bool> IsEmailExistAsync(string email)
@@ -70,8 +76,27 @@ namespace RoyalVilla_API.Services
             catch (Exception ex)
             {
                 // Log the exception or handle it as needed
-                throw new ApplicationException("An error occurred while registering the user.", ex);
+                throw new InvalidOperationException("An error occurred while registering the user.", ex);
             }
+        }
+        public string GenerateJwtToken(User user)
+        {
+            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtSettings")["SecretKey"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, user.Name),
+                    new Claim(ClaimTypes.Role, user.Role),
+                }),
+                Expires = DateTime.UtcNow.AddDays(7), //which means the token will expire in 7 days
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)  //validate if the token is valid by using the same secret key and algorithm that was used to generate the token
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor); // this will create a JWT token based on the token descriptor which contains the claims, expiration and signing credentials
+            return tokenHandler.WriteToken(token); //this will return the token as a string
         }
     }
 }
