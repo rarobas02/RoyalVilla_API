@@ -22,9 +22,28 @@ namespace RoyalVilla_API.Services
             //return await _db.Users.AnyAsync(u => u.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase)); //does not work due string.equals cannot translate to string comparison to sql
         }
 
-        public Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO loginRequestDTO)
+        public async Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO loginRequestDTO)
         {
-            throw new NotImplementedException();
+            try 
+            {
+                var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower() && u.Password == loginRequestDTO.Password); //find the user with the same email and password, if not found return null 
+                if (user == null || user.Password != loginRequestDTO.Password)
+                {
+                    return null;
+                }
+
+                //Generate JWT token for the user
+                return new LoginResponseDTO
+                {
+                    UserDTO = _mapper.Map<UserDTO>(user), //this will convert the User to a UserDTO and return it
+                    Token = ""
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                throw new ApplicationException("An error occurred while logging in the user.", ex);
+            }
         }
 
         public async Task<UserDTO?> RegisterAsync(RegistrationRequestDTO registrationRequestDTO)
