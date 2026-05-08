@@ -32,7 +32,7 @@ namespace RoyalVilla_API.Services
         {
             try 
             {
-                var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower() && u.Password == loginRequestDTO.Password); //find the user with the same email and password, if not found return null 
+                var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower()); //find the user with the same email and password, if not found return null 
                 if (user == null || user.Password != loginRequestDTO.Password)
                 {
                     return null;
@@ -82,6 +82,7 @@ namespace RoyalVilla_API.Services
         }
         public string GenerateJwtToken(User user)
         {
+            
             var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtSettings")["SecretKey"]); // convert to byte array to use as the secret key for signing the token
             var tokenDescriptor = new SecurityTokenDescriptor
             {

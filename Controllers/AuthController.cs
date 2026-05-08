@@ -13,7 +13,7 @@ namespace RoyalVilla_API.Controllers
     {
         private readonly IAuthService _authService = authService; //use primary constructor to inject the auth service if only one class to inject is needed
 
-        [HttpPost]
+        [HttpPost("register")] // declares the route - register endpoint
         [ProducesResponseType(typeof(ApiResponse<UserDTO>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -49,7 +49,7 @@ namespace RoyalVilla_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
             }
         }
-        [HttpPost]
+        [HttpPost("login")]// declares the route - login endpoint
         [ProducesResponseType(typeof(ApiResponse<LoginResponseDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
