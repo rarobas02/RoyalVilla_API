@@ -86,7 +86,7 @@ namespace RoyalVilla_API.Services
             var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtSettings")["SecretKey"]); // convert to byte array to use as the secret key for signing the token
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Email, user.Email),
