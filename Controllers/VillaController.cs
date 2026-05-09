@@ -130,7 +130,7 @@ namespace RoyalVilla_API.Controllers
             }
             catch (Exception ex)
             {
-                var errorResponse = ApiResponse<object>.Error(StatusCodes.Status500InternalServerError, "An Error occurred while creating villa", ex.Message);
+                var errorResponse = ApiResponse<object>.Error(StatusCodes.Status500InternalServerError, "An Error occurred while updating villa", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
             }
         }

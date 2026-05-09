@@ -74,7 +74,7 @@ namespace RoyalVilla_API.Controllers
                     return BadRequest(ApiResponse<object>.BadRequest("Villa Amenity data is required"));
                 }
                 var villaExists = await _db.Villas.FirstOrDefaultAsync(u => u.Id == VillaAmenityDTO.VillaId);
-                if (villaExists is not null)
+                if (villaExists is null)
                 {
                     return Conflict(ApiResponse<object>.Conflict($"A villa with the Id '{VillaAmenityDTO.VillaId}' does not exists"));
                 }
@@ -97,41 +97,38 @@ namespace RoyalVilla_API.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ApiResponse<VillaAmenityDTO>>> UpdateVilla(int id, VillaAmenityUpdateDTO VillaAmenityDTO)
+        public async Task<ActionResult<ApiResponse<VillaAmenityDTO>>> UpdateVillaAmenity(int id, VillaAmenityUpdateDTO VillaAmenityDTO)
         {
             try
             {
                 if(VillaAmenityDTO is null)
                 {
-                    return BadRequest(ApiResponse<object>.BadRequest("VillaAmenity data is required"));
+                    return BadRequest(ApiResponse<object>.BadRequest("Villa Amenity data is required"));
                 }
-                if(id!= VillaAmenityDTO.Id)
+                if(id != VillaAmenityDTO.Id)
                 {
-                    return BadRequest(ApiResponse<object>.BadRequest("VillaAmenity ID in URL does not match VillaAmenity ID in request body"));
+                    return BadRequest(ApiResponse<object>.BadRequest("Villa Amenity ID in URL does not match Villa Amenity ID in request body"));
                 }
-                if(id!= VillaAmenityDTO.Id)
+                var villaExists = await _db.Villas.FirstOrDefaultAsync(u => u.Id == VillaAmenityDTO.VillaId);
+                if (villaExists is null)
                 {
-                    return BadRequest(ApiResponse<object>.BadRequest("VillaAmenity ID in URL does not match VillaAmenity ID in request body"));
+                    return Conflict(ApiResponse<object>.Conflict($"A villa with the Id '{VillaAmenityDTO.VillaId}' does not exists"));
                 }
-                var existingVilla = await _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
-                if(existingVilla == null)
+                var existingVillaAmenity = await _db.VillaAmenities.FirstOrDefaultAsync(u => u.Id == id);
+                if(existingVillaAmenity == null)
                 {
-                    return NotFound(ApiResponse<object>.NotFound($"VillaAmenity with ID {id} was not found"));
+                    return NotFound(ApiResponse<object>.NotFound($"Villa Amenity with ID {id} was not found"));
                 }
-                var duplicateVilla = await _db.Villas.FirstOrDefaultAsync(u => u.Name.ToLower() == VillaAmenityDTO.Name.ToLower() && u.Id != id);
-                if(duplicateVilla is not null)
-                {
-                    return Conflict(ApiResponse<object>.Conflict($"A villa name {VillaAmenityDTO.Name} already exists"));
-                }
-                _mapper.Map(VillaAmenityDTO, existingVilla);
-                existingVilla.UpdatedDate = DateTime.UtcNow;
+
+                _mapper.Map(VillaAmenityDTO, existingVillaAmenity);
+                existingVillaAmenity.UpdatedDate = DateTime.UtcNow;
                 await _db.SaveChangesAsync();
-                var reponse = ApiResponse<VillaAmenityDTO>.Ok(_mapper.Map<VillaAmenityDTO>(VillaAmenityDTO), "VillaAmenity updated successfully");
-                return Ok(VillaAmenityDTO);
+                var reponse = ApiResponse<VillaAmenityDTO>.Ok(_mapper.Map<VillaAmenityDTO>(existingVillaAmenity), "Villa Amenity updated successfully");
+                return Ok(reponse);
             }
             catch (Exception ex)
             {
-                var errorResponse = ApiResponse<object>.Error(StatusCodes.Status500InternalServerError, "An Error occurred while creating villa", ex.Message);
+                var errorResponse = ApiResponse<object>.Error(StatusCodes.Status500InternalServerError, "An Error occurred while updating villa amenity", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
             }
         }
@@ -143,20 +140,20 @@ namespace RoyalVilla_API.Controllers
         {
             try
             {
-                var existingVilla = await _db.Villas.FirstOrDefaultAsync(u => u.Id == id);
-                if(existingVilla == null)
+                var existingVillaAmenity = await _db.VillaAmenities.FirstOrDefaultAsync(u => u.Id == id);
+                if(existingVillaAmenity == null)
                 {
                     return NotFound(ApiResponse<object>.NotFound($"VillaAmenity with ID {id} was not found"));
                 }
-                _db.Villas.Remove(existingVilla);
+                _db.VillaAmenities.Remove(existingVillaAmenity);
                 await _db.SaveChangesAsync();
 
-                var response = ApiResponse<object>.NoContent("VillaAmenity deleted successfully");
+                var response = ApiResponse<object>.NoContent("Villa Amenity deleted successfully");
                 return Ok(response);
             }
             catch (Exception ex)
             {
-                var errorResponse = ApiResponse<object>.Error(StatusCodes.Status500InternalServerError, "An Error occurred while creating villa", ex.Message);
+                var errorResponse = ApiResponse<object>.Error(StatusCodes.Status500InternalServerError, "An Error occurred while deleting villa amenity", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
             }
         }
