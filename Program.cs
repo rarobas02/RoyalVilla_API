@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using RoyalVilla_API.Data;
 using RoyalVilla_API.Models;
 using RoyalVilla_API.Models.DTO;
 using RoyalVilla_API.Services;
 using Scalar.AspNetCore;
+using System.Reflection.Metadata;
 using System.Text;
+using System.Threading.Channels;
 var builder = WebApplication.CreateBuilder(args);
 var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtSettings")["SecretKey"]);
 builder.Services.AddAuthentication(options =>
@@ -34,7 +37,36 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 });
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+//scalar solution from adding jwt token when accessing the endpoint
+builder.Services.AddOpenApi(
+    options =>
+    {
+        options.AddDocumentTransformer((document, context, cancellationToken) =>
+        {
+            //Base setup for adding document transformer in scalar - syntax needed to make security happen in our API
+
+            document.Components ??= new(); // check if exist
+            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
+            {
+                ["Bearer"] = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "Enter JWT Bearer token"
+                }
+            };
+            document.Security =
+            [
+                new OpenApiSecurityRequirement
+                {
+                    { new OpenApiSecuritySchemeReference("Bearer"), new List<string>()}
+                }
+            ];
+            return Task.CompletedTask;
+        });
+    });
+
 builder.Services.AddAutoMapper(o=>
 {
     o.CreateMap<Villa, VillaCreateDTO>().ReverseMap();
