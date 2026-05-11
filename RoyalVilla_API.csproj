@@ -22,4 +22,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RoyalVilla.DTO\RoyalVilla.DTO.csproj" />
+  </ItemGroup>
+
 </Project>
