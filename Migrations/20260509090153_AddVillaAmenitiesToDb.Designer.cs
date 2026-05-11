@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RoyalVilla_API.Data;
 
@@ -11,9 +12,11 @@ using RoyalVilla_API.Data;
 namespace RoyalVilla_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260509090153_AddVillaAmenitiesToDb")]
+    partial class AddVillaAmenitiesToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,7 +163,7 @@ namespace RoyalVilla_API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RoyalVilla_API.Models.VillaAmenity", b =>
+            modelBuilder.Entity("RoyalVilla_API.Models.VillaAmenities", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -182,7 +185,7 @@ namespace RoyalVilla_API.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VillaId")
+                    b.Property<int?>("VillaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -192,15 +195,11 @@ namespace RoyalVilla_API.Migrations
                     b.ToTable("VillaAmenities");
                 });
 
-            modelBuilder.Entity("RoyalVilla_API.Models.VillaAmenity", b =>
+            modelBuilder.Entity("RoyalVilla_API.Models.VillaAmenities", b =>
                 {
-                    b.HasOne("RoyalVilla_API.Models.Villa", "Villa")
+                    b.HasOne("RoyalVilla_API.Models.Villa", null)
                         .WithMany("Amenities")
-                        .HasForeignKey("VillaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Villa");
+                        .HasForeignKey("VillaId");
                 });
 
             modelBuilder.Entity("RoyalVilla_API.Models.Villa", b =>
