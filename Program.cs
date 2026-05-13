@@ -30,6 +30,7 @@ builder.Services.AddAuthentication(options =>
             ClockSkew = TimeSpan.Zero // Set clock skew to zero to prevent token expiration issues
         };
     });
+builder.Services.AddCors();
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
@@ -90,7 +91,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference(); // localhost/scalar/v1 -> paste the url to the browser when run
 }
-
+app.UseCors(o=>o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("*"));
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
