@@ -7,7 +7,7 @@ using RoyalVilla.DTO;
 using RoyalVilla_API.Data;
 using RoyalVilla_API.Models;
 
-namespace RoyalVilla_API.Controllers
+namespace RoyalVilla_API.Controllers.v1
 {
     [Route("api/villa")]
     [ApiController]
