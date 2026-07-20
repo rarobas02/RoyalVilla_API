@@ -9,7 +9,7 @@ using RoyalVilla_API.Models;
 
 namespace RoyalVilla_API.Controllers.v1
 {
-    [Route("api/villa")]
+    [Route("api/v1/villa")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Customer,Admin")]
