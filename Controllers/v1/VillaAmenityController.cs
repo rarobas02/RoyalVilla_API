@@ -10,6 +10,7 @@ using RoyalVilla_API.Models;
 namespace RoyalVilla_API.Controllers.v1
 {
     [Route("api/v1/villa-amenity")]
+    [ApiExplorerSettings(GroupName = "v1")]
     [ApiController]
     //[Authorize(Roles = "Customer,Admin")]
     public class VillaAmenityController : ControllerBase

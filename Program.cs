@@ -37,36 +37,45 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddControllers();
+
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //scalar solution from adding jwt token when accessing the endpoint
-builder.Services.AddOpenApi(
-    options =>
-    {
-        options.AddDocumentTransformer((document, context, cancellationToken) =>
-        {
-            //Base setup for adding document transformer in scalar - syntax needed to make security happen in our API
 
-            document.Components ??= new(); // check if exist
-            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
-            {
-                ["Bearer"] = new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    Description = "Enter JWT Bearer token"
-                }
-            };
-            document.Security =
-            [
-                new OpenApiSecurityRequirement
-                {
-                    { new OpenApiSecuritySchemeReference("Bearer"), new List<string>()}
-                }
-            ];
-            return Task.CompletedTask;
-        });
-    });
+//we just commented this out because we are using scalar to generate the swagger documentation for our API, and we are using the default settings for the security scheme. If we want to customize the security scheme, we can uncomment this code and modify it as needed.
+//builder.Services.AddOpenApi(
+//    options =>
+//    {
+//        options.AddDocumentTransformer((document, context, cancellationToken) =>
+//        {
+//            //Base setup for adding document transformer in scalar - syntax needed to make security happen in our API
+
+//            document.Components ??= new(); // check if exist
+//            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
+//            {
+//                ["Bearer"] = new OpenApiSecurityScheme
+//                {
+//                    Type = SecuritySchemeType.Http,
+//                    Scheme = "bearer",
+//                    BearerFormat = "JWT",
+//                    Description = "Enter JWT Bearer token"
+//                }
+//            };
+//            document.Security =
+//            [
+//                new OpenApiSecurityRequirement
+//                {
+//                    { new OpenApiSecuritySchemeReference("Bearer"), new List<string>()}
+//                }
+//            ];
+//            return Task.CompletedTask;
+//        });
+//    });
+
+// register two documents for v1 and v2
+// allow us to maintain two api versions with separate documentation
+builder.Services.AddOpenApi("v1");
+builder.Services.AddOpenApi("v2");
 
 builder.Services.AddAutoMapper(o=>
 {
