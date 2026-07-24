@@ -98,7 +98,15 @@ await SeedDataAsync(app);
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(); // localhost/scalar/v1 -> paste the url to the browser when run
+    app.MapScalarApiReference(
+        option =>
+        {
+            option.Title = "DEMO Royal Villa API";
+            option.AddDocument("v1", "DEMO API v1", "/openapi/v1.json", isDefault: true);
+            option.AddDocument("v2", "DEMO API v2", "/openapi/v2.json", isDefault: false);
+
+        }
+        ); // localhost/scalar/v1 -> paste the url to the browser when run
 }
 app.UseCors(o=>o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("*"));
 app.UseHttpsRedirection();
